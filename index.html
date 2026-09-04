@@ -3,41 +3,912 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NGT Orçamentos</title>
-<link rel="stylesheet" href="style.css">
+<link rel="canonical" href="https://orcamentos.ngt.dev.br/">
+<title>NGT Orçamentos — o orçamento sai antes de você sair da casa do cliente</title>
+<meta name="description" content="Aplicativo Android para quem faz manutenção, instalação e reparos: você avalia o serviço, lança os itens e entrega um PDF com cara de empresa, pelo WhatsApp, ainda no local.">
+<style>
+@font-face {
+  font-family: 'Figtree';
+  src: url('fonts/figtree-latin.woff2') format('woff2');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+
+  --paper: #fbf9f8;
+  --surface: #ffffff;
+  --sunk: #f2edeb;
+  --ink: #262626;
+  --ink-soft: #5f5856;
+  --rule: #e6dedb;
+  --rule-strong: #d5cac6;
+  --red: #bc2629;
+  --red-press: #9d1e21;
+  --on-red: #ffffff;
+  --red-wash: #fbecec;
+
+  --shadow-lift: 0 1px 2px rgba(38, 24, 22, .05), 0 8px 24px -10px rgba(38, 24, 22, .18);
+  --shadow-page: 0 2px 6px rgba(38, 24, 22, .07), 0 28px 60px -28px rgba(38, 24, 22, .40);
+
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #171514;
+    --surface: #201d1c;
+    --sunk: #262221;
+    --ink: #ece7e5;
+    --ink-soft: #a89f9c;
+    --rule: #322d2b;
+    --rule-strong: #443d3b;
+    --red: #d9403f;
+    --red-press: #ef6360;
+    --on-red: #ffffff;
+    --red-wash: #2c1a1a;
+
+    --shadow-lift: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -10px rgba(0, 0, 0, .6);
+    --shadow-page: 0 2px 6px rgba(0, 0, 0, .5), 0 28px 60px -28px rgba(0, 0, 0, .9);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { scrollbar-color: var(--rule-strong) transparent; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--red); color: var(--on-red); }
+
+:focus-visible {
+  outline: 2.5px solid var(--red);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--rule-strong);
+  border-radius: 99px;
+  border: 3px solid var(--paper);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--ink-soft); }
+
+h1, h2, h3 {
+  letter-spacing: -.035em;
+  line-height: 1.08;
+  text-wrap: balance;
+  margin: 0;
+  font-weight: 700;
+}
+
+p { margin: 0; text-wrap: pretty; }
+
+a { color: inherit; }
+
+.shell { max-width: 71rem; margin: 0 auto; padding: 0 1.6rem; }
+
+/* ============ barra ============ */
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter: saturate(1.6) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s, background .3s;
+}
+
+.bar[data-stuck] { border-bottom-color: var(--rule); }
+
+.bar .shell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 4.25rem;
+}
+
+.mark { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+
+.mark svg { display: block; }
+
+.mark b { font-weight: 700; letter-spacing: -.02em; font-size: 1.02rem; }
+
+.bar nav { display: flex; gap: 1.9rem; }
+
+.bar nav a {
+  text-decoration: none;
+  color: var(--ink-soft);
+  font-size: .95rem;
+  font-weight: 500;
+  transition: color .18s;
+}
+
+.bar nav a:hover { color: var(--ink); }
+
+@media (max-width: 52rem) { .bar nav { display: none; } }
+
+/* ============ hero ============ */
+
+.hero { padding: clamp(3rem, 8vw, 6.5rem) 0 clamp(3rem, 7vw, 5.5rem); }
+
+.hero .shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+@media (max-width: 62rem) {
+  .hero .shell { grid-template-columns: 1fr; }
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 6.4vw, 4.15rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--red);
+}
+
+.hero .sub {
+  font-size: clamp(1.06rem, 1.6vw, 1.2rem);
+  color: var(--ink-soft);
+  max-width: 40ch;
+  margin-bottom: 2.2rem;
+}
+
+.cta { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; }
+
+.btn {
+  --btn-bg: var(--red);
+  --btn-fg: var(--on-red);
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 1px solid transparent;
+  padding: .88rem 1.5rem;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -.012em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-lift);
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease), background .16s;
+}
+
+.btn:hover { background: var(--red-press); transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(.985); transition-duration: .06s; }
+
+.btn.quiet {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  border-color: var(--rule-strong);
+  box-shadow: none;
+}
+
+.btn.quiet:hover { background: var(--sunk); border-color: var(--ink-soft); }
+
+.note {
+  margin-top: 1.5rem;
+  font-size: .89rem;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* ============ o documento ============ */
+
+.stage { position: relative; }
+
+.doc {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: var(--shadow-page);
+  padding: 1.7rem 1.6rem 1.5rem;
+  font-size: .8rem;
+  max-width: 25.5rem;
+  margin-inline: auto;
+  transform-origin: 50% 30%;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 62rem) {
+    .doc {
+      animation: doc-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 40% exit 10%;
+    }
+    @keyframes doc-drift {
+      from { transform: translateY(26px) rotate(-.5deg); }
+      to   { transform: translateY(-26px) rotate(.35deg); }
+    }
+  }
+}
+
+.doc-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: .9rem;
+  border-bottom: 1.5px solid var(--ink);
+}
+
+.doc-logo {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 7px;
+  background: var(--ink);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  flex: none;
+}
+
+.doc-store { font-weight: 700; font-size: .92rem; letter-spacing: -.02em; }
+.doc-store + div { color: var(--ink-soft); font-size: .72rem; line-height: 1.45; }
+
+.doc-no {
+  text-align: right;
+  flex: none;
+  font-size: .7rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.doc-no b { display: block; color: var(--ink); font-size: .95rem; letter-spacing: -.02em; }
+
+.doc-block { padding: .85rem 0; border-bottom: 1px solid var(--rule); }
+
+.doc-label {
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: .3rem;
+}
+
+.doc-block strong { font-weight: 650; letter-spacing: -.015em; }
+
+.doc-asset {
+  display: flex;
+  gap: 1.6rem;
+  margin-top: .5rem;
+  font-size: .74rem;
+  color: var(--ink-soft);
+}
+
+.doc-asset b { color: var(--ink); font-weight: 650; }
+
+.doc-items { padding-top: .35rem; }
+
+.doc-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  padding: .48rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: .78rem;
+}
+
+.doc-row span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; }
+.doc-row i { font-style: normal; color: var(--ink-soft); font-size: .72rem; }
+
+.doc-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: .95rem;
+}
+
+.doc-total span {
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.doc-total b {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--red);
+}
+
+.doc-foot {
+  margin-top: .9rem;
+  padding-top: .75rem;
+  border-top: 1px solid var(--rule);
+  font-size: .7rem;
+  color: var(--ink-soft);
+  display: flex;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  position: absolute;
+  right: -.4rem;
+  top: -.85rem;
+  z-index: 2;
+  background: var(--sunk);
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-soft);
+  font-size: .66rem;
+  font-weight: 600;
+  padding: .28rem .6rem;
+  border-radius: 99px;
+}
+
+/* estado inicial da animação */
+
+.anim .doc-head,
+.anim .doc-block,
+.anim .doc-row,
+.anim .doc-total,
+.anim .doc-foot { opacity: 0; }
+
+/* ============ seções ============ */
+
+section { padding: clamp(3.5rem, 7vw, 6rem) 0; border-top: 1px solid var(--rule); }
+
+.lede {
+  font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+  font-weight: 700;
+  max-width: 19ch;
+  margin-bottom: 1.1rem;
+}
+
+.intro { color: var(--ink-soft); max-width: 62ch; font-size: 1.05rem; }
+
+.head-pair { margin-bottom: clamp(2.2rem, 4vw, 3.2rem); }
+
+/* lista de recursos, sem cards */
+
+.feats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(2rem, 5vw, 4rem); }
+
+@media (max-width: 46rem) { .feats { grid-template-columns: 1fr; } }
+
+.feat {
+  display: grid;
+  grid-template-columns: 1.65rem 1fr;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.feat svg { margin-top: .15rem; color: var(--red); }
+
+.feat h3 { font-size: 1.03rem; font-weight: 650; margin-bottom: .3rem; letter-spacing: -.025em; }
+.feat p { color: var(--ink-soft); font-size: .95rem; }
+
+/* passos */
+
+.steps { counter-reset: s; display: grid; gap: 0; }
+
+.step {
+  counter-increment: s;
+  display: grid;
+  grid-template-columns: 3.4rem 1fr;
+  gap: 1.4rem;
+  padding: 1.55rem 0;
+  border-top: 1px solid var(--rule);
+  align-items: start;
+}
+
+.step::before {
+  content: counter(s);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -.05em;
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.step h3 { font-size: 1.08rem; font-weight: 650; margin-bottom: .25rem; letter-spacing: -.025em; }
+.step p { color: var(--ink-soft); font-size: .97rem; max-width: 58ch; }
+
+/* faq */
+
+.faq details {
+  border-top: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+.faq details:last-of-type { border-bottom: 1px solid var(--rule); }
+
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  font-weight: 600;
+  font-size: 1.03rem;
+  letter-spacing: -.02em;
+  transition: color .18s;
+}
+
+.faq summary:hover { color: var(--red); }
+.faq summary::-webkit-details-marker { display: none; }
+
+.faq .chev {
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--ink-soft);
+  transition: transform .34s var(--ease), color .18s;
+}
+
+.faq details[open] .chev { transform: rotate(45deg); color: var(--red); }
+
+.faq .answer { overflow: hidden; }
+
+.faq .answer p {
+  color: var(--ink-soft);
+  padding-bottom: 1.35rem;
+  max-width: 66ch;
+  font-size: .98rem;
+}
+
+.faq a { color: var(--red); text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+
+/* obter */
+
+.obter {
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: 22px;
+  padding: clamp(1.8rem, 4vw, 3rem);
+}
+
+.obter h2 { font-size: clamp(1.5rem, 3vw, 2.05rem); margin-bottom: .8rem; }
+.obter p { color: var(--ink-soft); max-width: 52ch; margin-bottom: 1.7rem; }
+
+/* rodapé */
+
+footer { border-top: 1px solid var(--rule); padding: 2.5rem 0 3.5rem; }
+
+footer .shell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .92rem;
+  color: var(--ink-soft);
+}
+
+footer nav { display: flex; gap: 1.6rem; flex-wrap: wrap; }
+footer a { text-decoration: none; transition: color .18s; }
+footer a:hover { color: var(--ink); }
+
+/* entrada discreta das seções */
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise { opacity: 0; transform: translateY(14px); }
+  .rise.seen {
+    opacity: 1;
+    transform: none;
+    transition: opacity .7s var(--ease), transform .7s var(--ease);
+  }
+}
+</style>
 </head>
 <body>
-<main>
-  <header>
-    <h1>NGT Orçamentos</h1>
-    <p class="lead">Aplicativo Android para profissionais de serviços técnicos gerarem orçamentos em PDF direto do celular, no local do atendimento.</p>
-  </header>
 
-  <section>
-    <h2>O que o aplicativo faz</h2>
-    <p>O NGT Orçamentos transforma uma avaliação de serviço em um documento PDF com aparência profissional, pronto para ser enviado ao cliente pelo WhatsApp. Ele reúne o cadastro da loja, os clientes, um catálogo de produtos e serviços e o histórico de orçamentos emitidos, com acompanhamento de status e um resumo financeiro do período.</p>
-    <p>O aplicativo funciona sem conexão. Todos os dados ficam gravados no próprio aparelho.</p>
-  </section>
+<header class="bar" id="bar">
+  <div class="shell">
+    <a class="mark" href="#topo">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 4.6h16v9.1c0 3-2.6 4.7-8 6.3-5.4-1.6-8-3.3-8-6.3V4.6Z" fill="#262626"/>
+        <path d="M7.4 15.2V8.9l4.4 4.7V8.9" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16.6 9.1h-1.9v4.4h1.9v-1.7" stroke="#bc2629" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <b>NGT Orçamentos</b>
+    </a>
+    <nav>
+      <a href="#recursos">Recursos</a>
+      <a href="#como">Como funciona</a>
+      <a href="#duvidas">Dúvidas</a>
+      <a href="#obter">Obter</a>
+    </nav>
+  </div>
+</header>
 
-  <section>
-    <h2>Backup no Google Drive</h2>
-    <p>O usuário pode, se quiser, conectar uma conta do Google para que o aplicativo mantenha uma cópia de segurança dos seus dados no Google Drive <strong>da própria conta dele</strong>. O arquivo pertence ao usuário, e o desenvolvedor não tem acesso a ele.</p>
-    <p>Essa função é opcional: o aplicativo funciona normalmente sem ela, e o backup também pode ser gerado como arquivo para o usuário guardar onde preferir.</p>
-  </section>
+<main id="topo">
 
-  <section>
-    <h2>Distribuição</h2>
-    <p>O aplicativo é distribuído diretamente pelo desenvolvedor, mediante licença de uso vinculada ao aparelho. Não está publicado em lojas de aplicativos.</p>
-  </section>
+<div class="hero">
+  <div class="shell">
+    <div>
+      <h1>O orçamento sai antes de você <em>sair da casa do cliente</em>.</h1>
+      <p class="sub">Você avalia o serviço, lança os itens e entrega um PDF com cara de empresa — pelo WhatsApp, ali mesmo. Sem computador, sem planilha, sem esperar chegar em casa.</p>
+      <div class="cta">
+        <a class="btn" href="#obter">Como obter</a>
+        <a class="btn quiet" href="#recursos">Ver o que faz</a>
+      </div>
+      <p class="note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7"/></svg>
+        Funciona sem internet. Android.
+      </p>
+    </div>
 
-  <nav class="links">
-    <a href="privacidade.html">Política de Privacidade</a>
-    <a href="termos.html">Termos de Uso</a>
-  </nav>
+    <div class="stage">
+      <span class="tag">exemplo ilustrativo</span>
+      <article class="doc anim" id="doc" aria-label="Exemplo de orçamento gerado pelo aplicativo">
 
-  <footer>
-    <p>NGT Services · Contato: <a href="mailto:SEU-EMAIL@EXEMPLO.COM">SEU-EMAIL@EXEMPLO.COM</a></p>
-  </footer>
+        <div class="doc-head">
+          <div class="doc-logo">NGT</div>
+          <div style="flex:1">
+            <div class="doc-store">Auto Elétrica Silva</div>
+            <div>CNPJ 00.000.000/0001-00<br>Rua das Oficinas, 240 · (00) 0000-0000</div>
+          </div>
+          <div class="doc-no"><b>Nº 0142</b>12/03/2026</div>
+        </div>
+
+        <div class="doc-block">
+          <div class="doc-label">Cliente</div>
+          <strong>Transportes Boa Vista</strong>
+          <div class="doc-asset">
+            <span>Veículo <b>Fiorino</b></span>
+            <span>Placa <b>RQP-4A12</b></span>
+          </div>
+        </div>
+
+        <div class="doc-items">
+          <div class="doc-row"><span>Troca de alternador<br><i>1 un · R$ 780,00</i></span><span>R$ 780,00</span></div>
+          <div class="doc-row"><span>Correia do alternador<br><i>1 un · R$ 145,00</i></span><span>R$ 145,00</span></div>
+          <div class="doc-row"><span>Mão de obra<br><i>2 h · R$ 120,00</i></span><span>R$ 240,00</span></div>
+        </div>
+
+        <div class="doc-total">
+          <span>Total</span>
+          <b data-total="1165">R$ 0,00</b>
+        </div>
+
+        <div class="doc-foot">
+          <span>Validade 15 dias</span>
+          <span>50% na aprovação</span>
+        </div>
+
+      </article>
+    </div>
+  </div>
+</div>
+
+<section id="recursos">
+  <div class="shell">
+    <div class="head-pair rise">
+      <h2 class="lede">O documento é o produto.</h2>
+      <p class="intro">É pelo PDF que o cliente decide, e é por ele que você é julgado. Todo o resto do aplicativo existe para que esse documento saia certo, rápido e sem você precisar lembrar de nada.</p>
+    </div>
+
+    <div class="feats">
+
+      <div class="feat rise">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+        <div>
+          <h3>PDF com a sua identidade</h3>
+          <p>Sua logo, seus dados, validade, condições de pagamento e observações. O cliente abre no WhatsApp e lê sem dar zoom.</p>
+        </div>
+      </div>
+
+      <div class="feat rise">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20.5 5.5 16A8 8 0 1 1 9 19.2l-5 1.3Z"/></svg>
+        <div>
+          <h3>Entrega pelo WhatsApp</h3>
+          <p>Gerou, compartilhou, acabou. O documento chega no mesmo minuto do atendimento, enquanto a conversa ainda está quente.</p>
+        </div>
+      </div>
+
+      <div class="feat rise">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c0-4 3.2-6.1 7.2-6.1s7.2 2.1 7.2 6.1"/></svg>
+        <div>
+          <h3>Clientes e os bens deles</h3>
+          <p>O carro, o setor, a máquina — cadastrados uma vez. Um toque preenche veículo e placa juntos, sem chance de trocar um pelo outro.</p>
+        </div>
+      </div>
+
+      <div class="feat rise">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5 12 3.5l8 4v9L12 20.5l-8-4v-9Z"/><path d="m4 7.5 8 4 8-4M12 11.5v9"/></svg>
+        <div>
+          <h3>Preço calculado do custo</h3>
+          <p>Cadastre o custo e a margem que você quer. O preço de venda sai pronto ao lançar o item, e continua editável quando o caso pede.</p>
+        </div>
+      </div>
+
+      <div class="feat rise">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3.2 2"/><circle cx="12" cy="12" r="8.5"/></svg>
+        <div>
+          <h3>Histórico que não se perde</h3>
+          <p>Numeração sequencial que nunca repete. Reenvie o mesmo PDF ou use um orçamento antigo como base para o próximo.</p>
+        </div>
+      </div>
+
+      <div class="feat rise">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 19.5v-6M10.5 19.5V8M16.5 19.5v-4M3.5 19.5h17"/></svg>
+        <div>
+          <h3>O que entrou e o que vem</h3>
+          <p>Marque aprovado, recusado ou executado. O financeiro mostra o que já rendeu, o que está por entrar e o lucro do período.</p>
+        </div>
+      </div>
+
+      <div class="feat rise">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.5H6a1.5 1.5 0 0 0-1.5 1.5v12A1.5 1.5 0 0 0 6 19.5h12a1.5 1.5 0 0 0 1.5-1.5v-5"/><path d="m9.5 13.2 8.9-8.9a1.7 1.7 0 0 1 2.4 2.4l-8.9 8.9-3.2.8.8-3.2Z"/></svg>
+        <div>
+          <h3>Os campos do seu ramo</h3>
+          <p>Numa oficina, Veículo e Placa. Numa pintura, Sala e Material. Você define uma vez e eles passam a identificar cada serviço.</p>
+        </div>
+      </div>
+
+      <div class="feat rise">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 21 19.5"/><path d="M8.6 10.3a9.6 9.6 0 0 0-2.8 1.9M4.2 8.1A15 15 0 0 1 12 5c1.2 0 2.4.1 3.5.4M18.4 9.2a14.6 14.6 0 0 1 1.4 1M9 15a5 5 0 0 1 5.4-.8"/><path d="M12 18.6h.01"/></svg>
+        <div>
+          <h3>Sinal ruim não trava nada</h3>
+          <p>Tudo acontece no aparelho. A conexão só é usada na hora de mandar o PDF — o galpão sem sinal deixa de ser problema.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="como">
+  <div class="shell">
+    <div class="head-pair rise">
+      <h2 class="lede">Da avaliação ao PDF, em minutos.</h2>
+      <p class="intro">O aplicativo foi desenhado para ser usado de pé, no celular, com uma das mãos ocupadas — não sentado no escritório.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step rise">
+        <div>
+          <h3>Você avalia o serviço</h3>
+          <p>Termina de ver o que precisa ser feito, ainda no local, com o cliente do lado.</p>
+        </div>
+      </div>
+      <div class="step rise">
+        <div>
+          <h3>Escolhe o cliente</h3>
+          <p>Da sua lista, ou cadastra na hora sem sair da tela. Os bens dele já aparecem para preencher os campos do serviço.</p>
+        </div>
+      </div>
+      <div class="step rise">
+        <div>
+          <h3>Lança os itens</h3>
+          <p>Do catálogo, com o preço já calculado, ou digitando na hora. O total se atualiza sozinho a cada linha.</p>
+        </div>
+      </div>
+      <div class="step rise">
+        <div>
+          <h3>Gera e envia</h3>
+          <p>O PDF sai pronto e vai para o WhatsApp. O orçamento fica salvo, numerado, esperando a resposta.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="duvidas">
+  <div class="shell">
+    <div class="head-pair rise">
+      <h2 class="lede">Dúvidas frequentes</h2>
+    </div>
+
+    <div class="faq rise">
+      <details>
+        <summary>Precisa de internet para usar?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="answer"><p>Não. O cadastro e a geração do orçamento acontecem no próprio aparelho. A conexão só entra quando você compartilha o PDF.</p></div>
+      </details>
+
+      <details>
+        <summary>Meus dados vão para algum servidor?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="answer"><p>Não existe servidor por trás do aplicativo. Os dados da sua loja, dos seus clientes e do seu histórico ficam gravados no seu celular. Os detalhes estão na <a href="privacidade.html">Política de Privacidade</a>.</p></div>
+      </details>
+
+      <details>
+        <summary>E se eu trocar de celular?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="answer"><p>O aplicativo gera um arquivo de backup com loja, clientes, catálogo e histórico, que você guarda onde preferir. É ele que devolve tudo no aparelho novo. Como os dados moram só no celular, manter o backup em dia é importante.</p><p>Se preferir automatizar, dá para conectar a sua conta do Google e deixar esse mesmo arquivo guardado no <strong>seu</strong> Google Drive. O aplicativo só enxerga o arquivo que ele mesmo criou — nenhum outro arquivo do seu Drive — e o desenvolvedor não tem acesso a nada disso. Detalhes na <a href="privacidade.html">Política de Privacidade</a>.</p></div>
+      </details>
+
+      <details>
+        <summary>Está na Play Store?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="answer"><p>Não. O aplicativo é entregue diretamente, com licença de uso presa ao seu aparelho. Na primeira instalação o Android pede autorização para instalar fora da loja — é um passo só, e a orientação vai junto.</p></div>
+      </details>
+
+      <details>
+        <summary>Funciona em iPhone?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="answer"><p>Não. Por enquanto é só Android.</p></div>
+      </details>
+
+      <details>
+        <summary>Como funciona a licença?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="answer"><p>A licença é por aparelho e tem prazo. Perto do vencimento o aplicativo avisa, e a renovação é feita com uma chave que você recebe e cola na tela de licença. Os dados cadastrados continuam seus e podem ser exportados quando quiser.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="obter">
+  <div class="shell">
+    <div class="obter rise">
+      <h2>Peça o seu acesso</h2>
+      <p>O aplicativo é licenciado por aparelho, direto comigo. Me chame e eu envio o arquivo de instalação junto com a sua chave de ativação e o passo a passo.</p>
+      <div class="cta">
+        <a class="btn" href="mailto:lennonnag@gmail.com">Mandar um e-mail</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
+
+<footer>
+  <div class="shell">
+    <div>NGT Services · NGT Orçamentos</div>
+    <nav>
+      <a href="privacidade.html">Política de Privacidade</a>
+      <a href="termos.html">Termos de Uso</a>
+      <a href="mailto:lennonnag@gmail.com">Contato</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+  var doc = document.getElementById('doc');
+  var totalEl = doc.querySelector('[data-total]');
+  var target = Number(totalEl.dataset.total);
+  var EASE = 'cubic-bezier(.16,1,.3,1)';
+
+  function paintTotal(v) { totalEl.textContent = brl.format(v); }
+
+  /* --- o momento autoral: o documento se monta --- */
+  function build() {
+    doc.classList.remove('anim');
+
+    if (calm) { paintTotal(target); return; }
+
+    var seq = [
+      { el: doc.querySelector('.doc-head'), d: 0 },
+      { el: doc.querySelector('.doc-block'), d: 260 }
+    ];
+    doc.querySelectorAll('.doc-row').forEach(function (row, i) {
+      seq.push({ el: row, d: 520 + i * 130 });
+    });
+    seq.push({ el: doc.querySelector('.doc-total'), d: 980 });
+    seq.push({ el: doc.querySelector('.doc-foot'), d: 1160 });
+
+    seq.forEach(function (s) {
+      s.el.animate(
+        [
+          { opacity: 0, transform: 'translateY(10px)', filter: 'blur(3px)' },
+          { opacity: 1, transform: 'none', filter: 'blur(0)' }
+        ],
+        { duration: 620, delay: s.d, easing: EASE, fill: 'both' }
+      );
+    });
+
+    /* o total conta e assenta */
+    var t0 = null;
+    var start = 980 + 120;
+    paintTotal(0);
+    function tick(ts) {
+      if (t0 === null) t0 = ts;
+      var p = (ts - t0 - start) / 780;
+      if (p < 0) { requestAnimationFrame(tick); return; }
+      if (p >= 1) {
+        paintTotal(target);
+        totalEl.animate(
+          [{ transform: 'scale(1)' }, { transform: 'scale(1.055)' }, { transform: 'scale(1)' }],
+          { duration: 520, easing: EASE }
+        );
+        return;
+      }
+      paintTotal(target * (1 - Math.pow(1 - p, 3)));
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(build);
+  else window.addEventListener('load', build);
+
+  /* --- barra ganha régua ao descolar do topo --- */
+  var bar = document.getElementById('bar');
+  var sentinel = document.createElement('div');
+  document.body.prepend(sentinel);
+  new IntersectionObserver(function (e) {
+    if (e[0].isIntersecting) bar.removeAttribute('data-stuck');
+    else bar.setAttribute('data-stuck', '');
+  }).observe(sentinel);
+
+  /* --- entrada das seções --- */
+  if (!calm) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en, i) {
+        if (!en.isIntersecting) return;
+        var el = en.target;
+        setTimeout(function () { el.classList.add('seen'); }, (i % 4) * 70);
+        io.unobserve(el);
+      });
+    }, { rootMargin: '0px 0px -12% 0px' });
+    document.querySelectorAll('.rise').forEach(function (el) { io.observe(el); });
+  } else {
+    document.querySelectorAll('.rise').forEach(function (el) { el.classList.add('seen'); });
+  }
+
+  /* --- acordeão com altura animada --- */
+  document.querySelectorAll('.faq details').forEach(function (d) {
+    var body = d.querySelector('.answer');
+    var open = false;
+
+    d.addEventListener('click', function (ev) {
+      if (!ev.target.closest('summary')) return;
+      ev.preventDefault();
+
+      if (calm) { d.open = !d.open; open = d.open; return; }
+      if (d.dataset.busy) return;
+      d.dataset.busy = '1';
+
+      if (!open) {
+        d.open = true;
+        var h = body.scrollHeight;
+        body.animate([{ height: '0px', opacity: 0 }, { height: h + 'px', opacity: 1 }],
+          { duration: 420, easing: EASE }).onfinish = function () {
+            open = true;
+            delete d.dataset.busy;
+          };
+      } else {
+        var h2 = body.scrollHeight;
+        body.animate([{ height: h2 + 'px', opacity: 1 }, { height: '0px', opacity: 0 }],
+          { duration: 300, easing: EASE }).onfinish = function () {
+            d.open = false;
+            open = false;
+            delete d.dataset.busy;
+          };
+      }
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
