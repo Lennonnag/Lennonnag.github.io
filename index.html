@@ -5,144 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://orcamentos.ngt.dev.br/">
 <title>NGT Orçamentos — o orçamento sai antes de você sair da casa do cliente</title>
-<meta name="description" content="Aplicativo Android para quem faz manutenção, instalação e reparos: você avalia o serviço, lança os itens e entrega um PDF com cara de empresa, pelo WhatsApp, ainda no local.">
+<meta name="description" content="Aplicativo Android para quem faz manutenção, instalação e reparos: você avalia o serviço, lança os itens e entrega um PDF com cara de empresa, pelo WhatsApp, ainda no local. Aprovou, o serviço entra na agenda e o lembrete chega antes da hora.">
+<link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
+<link rel="stylesheet" href="style.css">
 <style>
-@font-face {
-  font-family: 'Figtree';
-  src: url('fonts/figtree-latin.woff2') format('woff2');
-  font-weight: 300 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-:root {
-  color-scheme: light dark;
-
-  --paper: #fbf9f8;
-  --surface: #ffffff;
-  --sunk: #f2edeb;
-  --ink: #262626;
-  --ink-soft: #5f5856;
-  --rule: #e6dedb;
-  --rule-strong: #d5cac6;
-  --red: #bc2629;
-  --red-press: #9d1e21;
-  --on-red: #ffffff;
-  --red-wash: #fbecec;
-
-  --shadow-lift: 0 1px 2px rgba(38, 24, 22, .05), 0 8px 24px -10px rgba(38, 24, 22, .18);
-  --shadow-page: 0 2px 6px rgba(38, 24, 22, .07), 0 28px 60px -28px rgba(38, 24, 22, .40);
-
-  --ease: cubic-bezier(.16, 1, .3, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #171514;
-    --surface: #201d1c;
-    --sunk: #262221;
-    --ink: #ece7e5;
-    --ink-soft: #a89f9c;
-    --rule: #322d2b;
-    --rule-strong: #443d3b;
-    --red: #d9403f;
-    --red-press: #ef6360;
-    --on-red: #ffffff;
-    --red-wash: #2c1a1a;
-
-    --shadow-lift: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -10px rgba(0, 0, 0, .6);
-    --shadow-page: 0 2px 6px rgba(0, 0, 0, .5), 0 28px 60px -28px rgba(0, 0, 0, .9);
-  }
-}
-
-* { box-sizing: border-box; }
-
-html { scrollbar-color: var(--rule-strong) transparent; }
-
-body {
-  margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 17px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-::selection { background: var(--red); color: var(--on-red); }
-
-:focus-visible {
-  outline: 2.5px solid var(--red);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar { width: 11px; height: 11px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: var(--rule-strong);
-  border-radius: 99px;
-  border: 3px solid var(--paper);
-}
-::-webkit-scrollbar-thumb:hover { background: var(--ink-soft); }
-
-h1, h2, h3 {
-  letter-spacing: -.035em;
-  line-height: 1.08;
-  text-wrap: balance;
-  margin: 0;
-  font-weight: 700;
-}
-
-p { margin: 0; text-wrap: pretty; }
-
-a { color: inherit; }
-
-.shell { max-width: 71rem; margin: 0 auto; padding: 0 1.6rem; }
-
-/* ============ barra ============ */
-
-.bar {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  background: color-mix(in srgb, var(--paper) 86%, transparent);
-  backdrop-filter: saturate(1.6) blur(14px);
-  border-bottom: 1px solid transparent;
-  transition: border-color .3s, background .3s;
-}
-
-.bar[data-stuck] { border-bottom-color: var(--rule); }
-
-.bar .shell {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  height: 4.25rem;
-}
-
-.mark { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
-
-.mark svg { display: block; }
-
-.mark b { font-weight: 700; letter-spacing: -.02em; font-size: 1.02rem; }
-
-.bar nav { display: flex; gap: 1.9rem; }
-
-.bar nav a {
-  text-decoration: none;
-  color: var(--ink-soft);
-  font-size: .95rem;
-  font-weight: 500;
-  transition: color .18s;
-}
-
-.bar nav a:hover { color: var(--ink); }
-
-@media (max-width: 52rem) { .bar nav { display: none; } }
-
 /* ============ hero ============ */
 
 .hero { padding: clamp(3rem, 8vw, 6.5rem) 0 clamp(3rem, 7vw, 5.5rem); }
@@ -382,7 +248,7 @@ a { color: inherit; }
 
 /* ============ seções ============ */
 
-section { padding: clamp(3.5rem, 7vw, 6rem) 0; border-top: 1px solid var(--rule); }
+section { padding: clamp(3.5rem, 7vw, 6rem) 0; border-top: 1px solid var(--rule); scroll-margin-top: 5rem; }
 
 .lede {
   font-size: clamp(1.6rem, 3.2vw, 2.3rem);
@@ -464,7 +330,7 @@ section { padding: clamp(3.5rem, 7vw, 6rem) 0; border-top: 1px solid var(--rule)
   transition: color .18s;
 }
 
-.faq summary:hover { color: var(--red); }
+.faq summary:hover { color: var(--red-link); }
 .faq summary::-webkit-details-marker { display: none; }
 
 .faq .chev {
@@ -486,7 +352,7 @@ section { padding: clamp(3.5rem, 7vw, 6rem) 0; border-top: 1px solid var(--rule)
   font-size: .98rem;
 }
 
-.faq a { color: var(--red); text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+.faq a { color: var(--red-link); text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
 
 /* obter */
 
@@ -500,23 +366,133 @@ section { padding: clamp(3.5rem, 7vw, 6rem) 0; border-top: 1px solid var(--rule)
 .obter h2 { font-size: clamp(1.5rem, 3vw, 2.05rem); margin-bottom: .8rem; }
 .obter p { color: var(--ink-soft); max-width: 52ch; margin-bottom: 1.7rem; }
 
-/* rodapé */
+/* ============ depois da aprovação ============ */
 
-footer { border-top: 1px solid var(--rule); padding: 2.5rem 0 3.5rem; }
-
-footer .shell {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 2rem;
-  justify-content: space-between;
+.depois .shell {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  gap: clamp(2.4rem, 5vw, 4.5rem);
   align-items: center;
-  font-size: .92rem;
-  color: var(--ink-soft);
 }
 
-footer nav { display: flex; gap: 1.6rem; flex-wrap: wrap; }
-footer a { text-decoration: none; transition: color .18s; }
-footer a:hover { color: var(--ink); }
+@media (max-width: 62rem) {
+  .depois .shell { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 62.01rem) {
+  .depois .stage { order: -1; }
+}
+
+.depois .head-pair { margin-bottom: 0; }
+.depois .stage { padding-top: 2rem; }
+.depois .tag { top: 0; right: 0; }
+
+.points { display: grid; gap: 1.55rem; margin-top: 2rem; }
+.points h3 { font-size: 1.02rem; font-weight: 650; letter-spacing: -.025em; margin-bottom: .28rem; }
+.points p { color: var(--ink-soft); font-size: .96rem; max-width: 50ch; }
+
+/* o lembrete e o dia */
+
+.agenda { position: relative; max-width: 25.5rem; margin-inline: auto; }
+
+.notif {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 -1.45rem 1.9rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 15px;
+  box-shadow: var(--shadow-lift);
+  padding: .8rem .95rem .9rem;
+}
+
+.notif-app {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .66rem;
+  font-weight: 650;
+  color: var(--ink-soft);
+  margin-bottom: .42rem;
+}
+
+.notif-app svg { display: block; flex: none; }
+.notif-app .ago { margin-left: auto; font-weight: 500; }
+
+.notif b { display: block; font-size: .86rem; font-weight: 700; letter-spacing: -.022em; margin-bottom: .18rem; }
+.notif p { font-size: .75rem; color: var(--ink-soft); line-height: 1.45; }
+
+.sched {
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 15px;
+  box-shadow: var(--shadow-page);
+  padding: 2.55rem 1.1rem 1.1rem;
+}
+
+.sched-day {
+  font-size: .61rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: .55rem;
+}
+
+.sched-item {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: .85rem;
+  padding: .72rem 0;
+  align-items: start;
+}
+
+.sched-item + .sched-item { border-top: 1px solid var(--rule); }
+.sched-day + .sched-item { padding-top: 0; }
+
+.when {
+  justify-self: start;
+  font-size: .65rem;
+  font-weight: 700;
+  padding: .27rem .5rem;
+  border-radius: 7px;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sched-item strong { display: block; font-size: .85rem; font-weight: 650; letter-spacing: -.022em; }
+.sched-item .meta { font-size: .72rem; color: var(--ink-soft); line-height: 1.5; }
+
+.late {
+  margin-top: 1.15rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  padding: .7rem .85rem .8rem;
+}
+
+.late .sched-day { color: var(--ink); margin-bottom: .45rem; }
+.late .sched-item { padding: 0; }
+.late .when { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+.done {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  margin-top: .5rem;
+  font-size: .68rem;
+  font-weight: 650;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  padding: .26rem .55rem;
+}
+
+.done svg { display: block; }
 
 /* entrada discreta das seções */
 
@@ -535,16 +511,13 @@ footer a:hover { color: var(--ink); }
 <header class="bar" id="bar">
   <div class="shell">
     <a class="mark" href="#topo">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M4 4.6h16v9.1c0 3-2.6 4.7-8 6.3-5.4-1.6-8-3.3-8-6.3V4.6Z" fill="#262626"/>
-        <path d="M7.4 15.2V8.9l4.4 4.7V8.9" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M16.6 9.1h-1.9v4.4h1.9v-1.7" stroke="#bc2629" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <img src="logo.png" width="144" height="136" alt="" decoding="async">
       <b>NGT Orçamentos</b>
     </a>
     <nav>
       <a href="#recursos">Recursos</a>
       <a href="#como">Como funciona</a>
+      <a href="#agenda">Agenda</a>
       <a href="#duvidas">Dúvidas</a>
       <a href="#obter">Obter</a>
     </nav>
@@ -573,7 +546,7 @@ footer a:hover { color: var(--ink); }
       <article class="doc anim" id="doc" aria-label="Exemplo de orçamento gerado pelo aplicativo">
 
         <div class="doc-head">
-          <div class="doc-logo">NGT</div>
+          <div class="doc-logo">AES</div>
           <div style="flex:1">
             <div class="doc-store">Auto Elétrica Silva</div>
             <div>CNPJ 00.000.000/0001-00<br>Rua das Oficinas, 240 · (00) 0000-0000</div>
@@ -724,6 +697,92 @@ footer a:hover { color: var(--ink); }
   </div>
 </section>
 
+<section id="agenda" class="depois">
+  <div class="shell">
+
+    <div class="stage rise">
+      <span class="tag">exemplo ilustrativo</span>
+      <article class="agenda" aria-label="Exemplo da agenda: um lembrete de notificação sobre a lista de serviços do dia, com um serviço atrasado destacado">
+
+        <div class="notif">
+          <div class="notif-app">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 4.6h16v9.1c0 3-2.6 4.7-8 6.3-5.4-1.6-8-3.3-8-6.3V4.6Z" fill="currentColor"/>
+            </svg>
+            NGT Orçamentos
+            <span class="ago">agora</span>
+          </div>
+          <b>Amanhã, 9h — Transportes Boa Vista</b>
+          <p>Fiorino · RQP-4A12 — Rua das Oficinas, 240</p>
+        </div>
+
+        <div class="sched">
+          <div class="sched-day">Sexta, 20 de março</div>
+
+          <div class="sched-item">
+            <span class="when">09:00</span>
+            <div>
+              <strong>Transportes Boa Vista</strong>
+              <div class="meta">Fiorino · RQP-4A12<br>Rua das Oficinas, 240</div>
+            </div>
+          </div>
+
+          <div class="sched-item">
+            <span class="when">Tarde</span>
+            <div>
+              <strong>Frota Lima</strong>
+              <div class="meta">Strada · MQK-7B08<br>Av. Beira-Rio, 1180</div>
+            </div>
+          </div>
+
+          <div class="late">
+            <div class="sched-day">Atrasados</div>
+            <div class="sched-item">
+              <span class="when">Ontem 14h</span>
+              <div>
+                <strong>Auto Posto Bandeira</strong>
+                <div class="meta">Ducato · SJT-2C19</div>
+                <span class="done">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7"/></svg>
+                  Executado
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </article>
+    </div>
+
+    <div class="rise">
+      <div class="head-pair">
+        <h2 class="lede">O serviço não acaba no PDF.</h2>
+        <p class="intro">Aprovou, você marca o dia. Daí em diante quem lembra é o aplicativo — e o que você executa volta para o financeiro sem precisar procurar no histórico.</p>
+      </div>
+
+      <div class="points">
+        <div>
+          <h3>Só entra o que foi aprovado</h3>
+          <p>Orçamento aprovado vira compromisso, com data escolhida no calendário do próprio Android. Recado solto e visita de avaliação continuam de fora: isto é a agenda do serviço, não uma agenda de tudo.</p>
+        </div>
+        <div>
+          <h3>O aviso chega três vezes</h3>
+          <p>Na véspera às 18h, na manhã do dia e uma hora antes. O aviso leva cliente, bem e endereço — que é o que se lê a caminho — e abre o orçamento quando você toca nele.</p>
+        </div>
+        <div>
+          <h3>Hora marcada, manhã ou tarde</h3>
+          <p>Serviço de campo raramente tem hora firme. Você marca a janela que existe de verdade, e o aplicativo avisa na hora de salvar se ela bater com outro serviço já agendado.</p>
+        </div>
+        <div>
+          <h3>Atrasado não some da tela</h3>
+          <p>Passada a janela, o serviço vai para Atrasados com o botão de marcar executado ali mesmo — um serviço das 9h aparece atrasado ao meio-dia, não no dia seguinte.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <section id="duvidas">
   <div class="shell">
     <div class="head-pair rise">
@@ -742,8 +801,13 @@ footer a:hover { color: var(--ink); }
       </details>
 
       <details>
+        <summary>Os lembretes da agenda funcionam sem internet?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="answer"><p>Funcionam. São alarmes do próprio Android, marcados no aparelho — não há push nem servidor no meio. A permissão de notificação é pedida quando você liga o primeiro lembrete, não na primeira abertura; se você recusar, o agendamento continua salvo e o aplicativo avisa que nada vai tocar.</p><p>Vale saber: alguns fabricantes cortam alarmes de aplicativos quando a economia de bateria está no modo agressivo, e isso pode atrasar o aviso.</p></div>
+      </details>
+
+      <details>
         <summary>E se eu trocar de celular?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="answer"><p>O aplicativo gera um arquivo de backup com loja, clientes, catálogo e histórico, que você guarda onde preferir. É ele que devolve tudo no aparelho novo. Como os dados moram só no celular, manter o backup em dia é importante.</p><p>Se preferir automatizar, dá para conectar a sua conta do Google e deixar esse mesmo arquivo guardado no <strong>seu</strong> Google Drive. O aplicativo só enxerga o arquivo que ele mesmo criou — nenhum outro arquivo do seu Drive — e o desenvolvedor não tem acesso a nada disso. Detalhes na <a href="privacidade.html">Política de Privacidade</a>.</p></div>
+        <div class="answer"><p>O aplicativo gera um arquivo de backup com loja, clientes, catálogo, histórico e agenda, que você guarda onde preferir. É ele que devolve tudo no aparelho novo. Como os dados moram só no celular, manter o backup em dia é importante.</p><p>Se preferir automatizar, dá para conectar a sua conta do Google e deixar esse mesmo arquivo guardado no <strong>seu</strong> Google Drive. O aplicativo só enxerga o arquivo que ele mesmo criou — nenhum outro arquivo do seu Drive — e o desenvolvedor não tem acesso a nada disso. Detalhes na <a href="privacidade.html">Política de Privacidade</a>.</p></div>
       </details>
 
       <details>
