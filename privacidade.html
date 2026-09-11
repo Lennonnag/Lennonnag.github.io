@@ -34,7 +34,7 @@
 
     <section class="summary">
       <h2>Resumo</h2>
-      <p>Os seus orçamentos, clientes e catálogo ficam gravados no seu próprio aparelho e não são enviados a lugar nenhum. O aplicativo fala com um servidor do desenvolvedor apenas para ativar e renovar a sua licença de uso, e nessa conversa vão o código do aparelho e o nome que você digitou na ativação — mais nada. Não há telemetria, publicidade nem compartilhamento com terceiros.</p>
+      <p>Os seus orçamentos, clientes e catálogo ficam gravados no seu próprio aparelho e não são enviados a lugar nenhum. O aplicativo fala com um servidor do desenvolvedor apenas para ativar e renovar a sua licença de uso, e nessa conversa vão o código do aparelho e o nome que você digitou na ativação — mais nada. Esse mesmo servidor avisa quando existe versão nova do aplicativo e entrega o arquivo de instalação quando você pede. Não há telemetria, publicidade nem compartilhamento com terceiros.</p>
     </section>
 
     <section>
@@ -54,7 +54,7 @@
         <dd>O nome do cliente, o código do aparelho, o nome digitado na ativação, a situação da licença, a data do primeiro contato, a data do último contato, o prazo do contrato e a licença assinada que foi emitida.</dd>
 
         <dt>Quando ele fala</dt>
-        <dd>Ao pedir a ativação; a cada poucos segundos enquanto o pedido está na fila esperando liberação; a cada abertura do aplicativo, quando já existe licença; e ao abrir a tela de Licença.</dd>
+        <dd>Ao pedir a ativação; a cada poucos segundos enquanto o pedido está na fila esperando liberação; a cada abertura do aplicativo, quando já existe licença; ao abrir a tela de Licença; e ao procurar atualização, como descrito adiante.</dd>
 
         <dt>Endereço IP</dt>
         <dd>Usado apenas na memória do servidor, para limitar tentativas de abuso. Não é gravado em banco de dados nem em registro de acesso.</dd>
@@ -62,6 +62,13 @@
       <p>A data do último contato significa que o desenvolvedor sabe quando aquele aparelho pediu licença pela última vez. Ela existe para distinguir uma troca de celular de uma instalação em dois aparelhos ao mesmo tempo. Ela não diz o que você fez no aplicativo, quantos orçamentos emitiu nem o que havia neles: isso o servidor não recebe.</p>
       <p>O servidor roda em máquina sob controle direto do desenvolvedor, no Brasil. A conexão entre o aplicativo e essa máquina é entregue pela <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare</a>, que termina a criptografia do tráfego e portanto atua como intermediária dessas requisições, podendo processá-las em servidores fora do Brasil.</p>
       <p>Esses registros ficam guardados por tempo indeterminado, para que uma licença possa ser renovada depois sem refazer o cadastro. Você pode pedir a exclusão do registro do seu aparelho pelo <a href="mailto:lennonnag@gmail.com">e-mail de contato</a>.</p>
+    </section>
+
+    <section id="atualizacao">
+      <h2>Atualização do aplicativo</h2>
+      <p>A consulta de atualização envia o código do aparelho e nada além dele: o servidor o usa para confirmar que aquele aparelho tem licença ativa antes de responder. Essa consulta não grava nada no cadastro, nem altera a data do último contato.</p>
+      <p>Quem procura a versão publicada é o servidor, não o seu aparelho. O arquivo de instalação também é entregue por ele, de modo que o seu aparelho não fala com o serviço onde as versões ficam hospedadas, e esse serviço não recebe o código do aparelho nem qualquer dado seu.</p>
+      <p>O arquivo baixado fica guardado dentro do aplicativo até você instalar, e é apagado quando deixa de ser a versão mais recente.</p>
     </section>
 
     <section>
@@ -76,8 +83,11 @@
         <dt>Notificações e alarmes</dt>
         <dd>Apenas para os lembretes da agenda, que são alarmes marcados no próprio aparelho. A permissão é pedida quando você agenda um serviço com lembrete, e não na primeira abertura; recusada, o agendamento continua salvo e nenhum aviso é exibido. Não há notificação enviada por servidor, e nenhum dado sai do aparelho por causa dos lembretes.</dd>
 
+        <dt>Instalar aplicativos</dt>
+        <dd>Usada apenas para abrir o instalador do Android com a atualização que você baixou. Quem confirma a instalação é você, na tela do próprio Android, que ainda pede autorização para o NGT Orçamentos como fonte de instalação. O aplicativo não instala nada em silêncio nem instala outros programas.</dd>
+
         <dt>Internet</dt>
-        <dd>Usada pelo licenciamento descrito acima e pela função opcional de backup no Google Drive. A montagem do orçamento, a geração do PDF e os lembretes da agenda funcionam sem conexão.</dd>
+        <dd>Usada pelo licenciamento e pela atualização descritos acima, e pela função opcional de backup no Google Drive. A montagem do orçamento, a geração do PDF e os lembretes da agenda funcionam sem conexão.</dd>
       </dl>
     </section>
 
