@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://orcamentos.ngt.dev.br/privacidade.html">
 <title>Política de Privacidade — NGT Orçamentos</title>
-<meta name="description" content="O NGT Orçamentos não tem servidores: os dados ficam no seu aparelho. O que é gravado, quais permissões são usadas e como funciona o backup opcional no seu Google Drive.">
+<meta name="description" content="Os seus orçamentos e clientes ficam no aparelho. O que o servidor de licenças recebe, quais permissões são usadas e como funciona o backup opcional no seu Google Drive.">
 <link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -29,18 +29,39 @@
 
     <header class="prose-head">
       <h1>Política de Privacidade</h1>
-      <p class="prose-meta">Última atualização: 4 de setembro de 2026</p>
+      <p class="prose-meta">Última atualização: 11 de setembro de 2026</p>
     </header>
 
     <section class="summary">
       <h2>Resumo</h2>
-      <p>O NGT Orçamentos não possui servidores. Os dados que você cadastra ficam gravados no seu próprio aparelho e não são enviados ao desenvolvedor. Não há coleta de dados de uso, publicidade ou compartilhamento com terceiros.</p>
+      <p>Os seus orçamentos, clientes e catálogo ficam gravados no seu próprio aparelho e não são enviados a lugar nenhum. O aplicativo fala com um servidor do desenvolvedor apenas para ativar e renovar a sua licença de uso, e nessa conversa vão o código do aparelho e o nome que você digitou na ativação — mais nada. Não há telemetria, publicidade nem compartilhamento com terceiros.</p>
     </section>
 
     <section>
       <h2>Dados armazenados no aparelho</h2>
       <p>O aplicativo grava localmente, na memória do dispositivo: os dados da sua loja (nome, CNPJ, endereço, telefone, logotipo), o cadastro dos seus clientes (nome, documento, telefone, endereço, responsável e bens descritos), o catálogo de produtos e serviços com custos, o histórico de orçamentos emitidos — incluindo o status, o agendamento do serviço e os lembretes de cada um —, o orçamento em edição, a licença de uso e o registro do seu aceite dos <a href="termos.html">Termos de Uso</a> e desta política, com data e versão.</p>
       <p>Esses dados permanecem no aparelho e são apagados quando o aplicativo é desinstalado.</p>
+    </section>
+
+    <section id="servidor">
+      <h2>Servidor de licenças</h2>
+      <p>Para ativar e renovar a sua licença de uso, o aplicativo conversa com um servidor do desenvolvedor. É a única conversa que ele tem com o desenvolvedor, e nela <strong>não trafega nada dos seus orçamentos, clientes, catálogo ou financeiro</strong>.</p>
+      <dl>
+        <dt>O que sai do aparelho</dt>
+        <dd>O código do aparelho e o nome que você digitou na ativação. O código do aparelho é um texto curto derivado do identificador do Android por uma função de mão única — não é o identificador em si, não dá para voltar dele ao aparelho, e ele muda se o celular for restaurado de fábrica.</dd>
+
+        <dt>O que o servidor grava</dt>
+        <dd>O nome do cliente, o código do aparelho, o nome digitado na ativação, a situação da licença, a data do primeiro contato, a data do último contato, o prazo do contrato e a licença assinada que foi emitida.</dd>
+
+        <dt>Quando ele fala</dt>
+        <dd>Ao pedir a ativação; a cada poucos segundos enquanto o pedido está na fila esperando liberação; a cada abertura do aplicativo, quando já existe licença; e ao abrir a tela de Licença.</dd>
+
+        <dt>Endereço IP</dt>
+        <dd>Usado apenas na memória do servidor, para limitar tentativas de abuso. Não é gravado em banco de dados nem em registro de acesso.</dd>
+      </dl>
+      <p>A data do último contato significa que o desenvolvedor sabe quando aquele aparelho pediu licença pela última vez. Ela existe para distinguir uma troca de celular de uma instalação em dois aparelhos ao mesmo tempo. Ela não diz o que você fez no aplicativo, quantos orçamentos emitiu nem o que havia neles: isso o servidor não recebe.</p>
+      <p>O servidor roda em máquina sob controle direto do desenvolvedor, no Brasil. A conexão entre o aplicativo e essa máquina é entregue pela <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare</a>, que termina a criptografia do tráfego e portanto atua como intermediária dessas requisições, podendo processá-las em servidores fora do Brasil.</p>
+      <p>Esses registros ficam guardados por tempo indeterminado, para que uma licença possa ser renovada depois sem refazer o cadastro. Você pode pedir a exclusão do registro do seu aparelho pelo <a href="mailto:lennonnag@gmail.com">e-mail de contato</a>.</p>
     </section>
 
     <section>
@@ -50,13 +71,13 @@
         <dd>Apenas quando você escolhe preencher um cadastro a partir da lista de contatos do celular. O aplicativo lê o nome e o telefone do contato que você selecionar. A sua lista de contatos não é copiada, armazenada nem transmitida.</dd>
 
         <dt>Fotos</dt>
-        <dd>Apenas quando você escolhe uma imagem para usar como logotipo da loja. Nenhuma outra imagem é acessada.</dd>
+        <dd>Apenas quando você escolhe uma imagem para usar como logotipo da loja. A escolha é feita pelo seletor do próprio Android, e nenhuma outra imagem é acessada.</dd>
 
         <dt>Notificações e alarmes</dt>
-        <dd>Apenas para os lembretes da agenda, que são alarmes marcados no próprio aparelho. A permissão é pedida quando você liga o primeiro lembrete, e não na primeira abertura; recusada, o agendamento continua salvo e nenhum aviso é exibido. Não há notificação enviada por servidor, e nenhum dado sai do aparelho por causa dos lembretes.</dd>
+        <dd>Apenas para os lembretes da agenda, que são alarmes marcados no próprio aparelho. A permissão é pedida quando você agenda um serviço com lembrete, e não na primeira abertura; recusada, o agendamento continua salvo e nenhum aviso é exibido. Não há notificação enviada por servidor, e nenhum dado sai do aparelho por causa dos lembretes.</dd>
 
         <dt>Internet</dt>
-        <dd>Utilizada exclusivamente pela função opcional de backup no Google Drive, descrita abaixo.</dd>
+        <dd>Usada pelo licenciamento descrito acima e pela função opcional de backup no Google Drive. A montagem do orçamento, a geração do PDF e os lembretes da agenda funcionam sem conexão.</dd>
       </dl>
     </section>
 
@@ -64,7 +85,7 @@
       <h2>Backup no Google Drive (opcional)</h2>
       <p>Se você optar por conectar uma conta do Google, o aplicativo passa a enviar uma cópia dos dados descritos acima para o Google Drive <strong>da sua própria conta</strong>, em um único arquivo chamado <code>ngt-orcamentos-backup.json</code>, que é sobrescrito a cada envio.</p>
       <p>Para isso o aplicativo solicita o escopo <code>https://www.googleapis.com/auth/drive.file</code>, que concede acesso somente aos arquivos criados pelo próprio aplicativo. O NGT Orçamentos não consegue ver, ler nem modificar nenhum outro arquivo do seu Drive.</p>
-      <p>O arquivo de backup pertence a você e fica sob sua conta do Google. O desenvolvedor não tem acesso ao seu Drive nem ao conteúdo do backup, e nenhum dado trafega por servidores do desenvolvedor.</p>
+      <p>O arquivo de backup pertence a você e fica sob sua conta do Google. O desenvolvedor não tem acesso ao seu Drive nem ao conteúdo do backup, e esse arquivo não passa pelo servidor de licenças nem por qualquer outro servidor do desenvolvedor.</p>
       <p>Você pode desligar a função a qualquer momento, tocando em "Desconectar" na aba Dados da tela da Loja, e pode apagar o arquivo diretamente no seu Google Drive. Revogar o acesso do aplicativo também é possível em <a href="https://myaccount.google.com/permissions" rel="noopener">myaccount.google.com/permissions</a>.</p>
     </section>
 
@@ -76,16 +97,16 @@
 
     <section>
       <h2>Dados dos seus clientes</h2>
-      <p>Se você utiliza o aplicativo na sua atividade profissional, os dados dos seus clientes que você cadastra são de sua responsabilidade perante a Lei Geral de Proteção de Dados. O desenvolvedor não tem acesso a esses dados e não atua como operador em relação a eles: eles ficam no seu aparelho e, se você ativar o backup, na sua conta do Google.</p>
+      <p>Se você utiliza o aplicativo na sua atividade profissional, os dados dos seus clientes que você cadastra são de sua responsabilidade perante a Lei Geral de Proteção de Dados. O desenvolvedor não tem acesso a esses dados e não atua como operador em relação a eles: eles ficam no seu aparelho e, se você ativar o backup, na sua conta do Google. O servidor de licenças não recebe nada deles.</p>
     </section>
 
     <section>
       <h2>O que o aplicativo não faz</h2>
       <ul>
-        <li>Não coleta dados de uso, telemetria ou analytics.</li>
+        <li>Não coleta telemetria, analytics nem qualquer registro do que você faz dentro do aplicativo.</li>
         <li>Não exibe publicidade.</li>
-        <li>Não vende, aluga nem compartilha dados com terceiros.</li>
-        <li>Não envia dados a servidores do desenvolvedor, que não existem.</li>
+        <li>Não vende, aluga nem compartilha os seus dados com terceiros.</li>
+        <li>Não envia os seus orçamentos, clientes, catálogo ou financeiro a servidor nenhum.</li>
       </ul>
     </section>
 
